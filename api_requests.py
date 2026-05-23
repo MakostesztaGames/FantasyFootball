@@ -1,7 +1,9 @@
 import requests
 from datetime import date
 
-def load_match_data_from_api(api_key, fixture_id: int):
+MY_API_KEY = "3990a2fd3eb7167b7f460efce9dd2deb"
+
+def load_match_data_from_api(fixture_id: int, api_key=MY_API_KEY):
     # Az API-Football v3-as végpontja a meccs-játékos statisztikákhoz
     url = "https://v3.football.api-sports.io/fixtures/players"
 
@@ -28,7 +30,7 @@ def load_match_data_from_api(api_key, fixture_id: int):
         return None
     return response_data
 
-def load_matches_by_date_api(api_key, target_date: date):
+def load_matches_by_date_api( target_date: date, api_key=MY_API_KEY):
     url = "https://v3.football.api-sports.io/fixtures"
     headers = {"x-apisports-key": api_key}
 
@@ -46,7 +48,7 @@ def load_matches_by_date_api(api_key, target_date: date):
     
     return fixtures
     
-def check_api_status(api_key):
+def check_api_status(api_key=MY_API_KEY):
     """Lekéri a fiók státuszát és kiírja, hogy hány lekérdezés van még hátra aznap."""
     url = "https://v3.football.api-sports.io/status"
     headers = {"x-apisports-key": api_key}
