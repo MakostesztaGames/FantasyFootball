@@ -1,0 +1,32 @@
+{
+    "games": {
+        "minutes": 0.00,
+        "captain": 1.0
+    },
+    "shots": {
+        "total": 0.5,
+        "on": 2.0
+    },
+    "goals": {
+        "total": 6.0,
+        "assists": 6.0,
+        "conceded": -0.5
+    },
+    "passes": {
+        "total": 0.05,
+        "key": 1.0
+    },
+    "tackles": {
+        "total": 1.0
+    },
+    "duels": {
+        "won": 0.5
+    },
+    "fouls": {
+        "committed": -0.5
+    },
+    "cards": {
+        "yellow": -2.0,
+        "red": -5.0
+    }
+}

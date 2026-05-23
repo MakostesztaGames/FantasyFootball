@@ -20,6 +20,15 @@ if __name__ == "__main__":
     # save_fixture_player_stats(fixture_id=SAMPLE_MATCH_ID)
     data = get_match_playerdata(SAMPLE_MATCH_ID, force_download=True)
     for team in data["response"]:
-        print(team["players"][0])
+        players = []
+        for p in team["players"]:
+            stats = p["statistics"][0]
+            if stats["games"]["minutes"] != 0:
+                player = {"name":p["player"]["name"], "rating_old": stats["games"]["rating"], 
+                        "my_rating": calculate_player_points(stats)["total_points"] }
+                players.append(player)
 
+        players.sort(key=lambda x: x["my_rating"], reverse=True)
+        for i in players:
+            print(f"{i['name']}\t{i['my_rating']}\t{i['rating_old']}")
     
