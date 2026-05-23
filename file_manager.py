@@ -11,6 +11,7 @@ from api_requests import load_match_data_from_api, load_matches_by_date_api
 JSON_FILE_PATH = os.path.join(os.path.dirname(__file__), "data.json")
 
 def save_dict(data: Dict, file_path: Path, overwrite=False):
+    '''Saves the given dictionary to the given path'''
     if file_path.exists and not overwrite:
         raise FileExistsError("File already exists, if you want to overwrite it use overwrite=True")
 
@@ -20,14 +21,12 @@ def save_dict(data: Dict, file_path: Path, overwrite=False):
     print(f"Sikeres mentés! Fájlnév: {file_path}")
 
 
-def save_fixture_player_stats(fixture_id, api_key):
+def save_fixture_player_stats(fixture_id, file_path=None):
     """Lekéri egy adott meccs játékos statisztikáit az API-Football-ból,
     és elmenti egy JSON fájlba.
     """
-    
-    file_path= Path(f"match_data/match_{fixture_id}_player_stats.json")
-    if file_path.exists():
-        raise FileExistsError("Stat already loaded, use load instead of saving it.")
+    if file_path is None:
+        file_path= Path(f"match_data/match_{fixture_id}_player_stats.json")
 
     try:
         response_data = load_match_data_from_api(fixture_id)
@@ -43,6 +42,7 @@ def save_fixture_player_stats(fixture_id, api_key):
     
 
 def print_fixtures(target_date: date, fixtures: Dict):
+    '''Prints the fixtures, a helper function of save_matches_by_date'''
     print(
         f"\n=== MECCSEK ÉS ID-K ({target_date}) - Összesen: {len(fixtures)} db ==="
     )
@@ -64,8 +64,7 @@ def print_fixtures(target_date: date, fixtures: Dict):
 
         print("-" * 95)
 
-
-def save_matches_by_date(api_key, target_date=None, print_it=False, file_path=None):
+def save_matches_by_date(target_date=None, print_it=False, file_path=None):
     """Lementi egy adott nap meccseit (Hazai vs Vendég) és a hozzájuk tartozó Fixture ID-t."""
 
     # Ha nem adtál meg dátumot, akkor a mai napot használja (ÉÉÉÉ-HH-NN formátumban)
@@ -78,7 +77,7 @@ def save_matches_by_date(api_key, target_date=None, print_it=False, file_path=No
         raise FileExistsError("Stat already loaded, use load instead of saving it.")
 
     try:
-        fixtures = load_matches_by_date_api(target_date, api_key=api_key)
+        fixtures = load_matches_by_date_api(target_date)
         if not fixtures:
             print(f"Ezen a napon ({target_date}) nincsenek meccsek az API-ban")
             return None
@@ -94,8 +93,8 @@ def save_matches_by_date(api_key, target_date=None, print_it=False, file_path=No
         print(f"Hiba a meccsek lekérése közben: {e}")
         return None
 
-def load_json() -> Dict[str, Any]:
-    if not os.path.exists(JSON_FILE_PATH):
-        return None
-    with open(JSON_FILE_PATH, "r", encoding="utf-8") as f:
+def load_json(file_path:Path) -> Dict[str, Any]:
+    if not file_path.exists():
+        raise FileNotFoundError(f"No file at {file_path} to open.")
+    with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)

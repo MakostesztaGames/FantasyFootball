@@ -3,6 +3,7 @@ import requests
 from datetime import date
 from file_manager import * 
 from api_requests import *
+from data_collector import *
 
 
 # --- Így tudod használni a gyakorlatban: ---
@@ -14,6 +15,11 @@ if __name__ == "__main__":
     check_api_status()
 
     # 2. Teszt: Mai meccsek listázása
-    # save_matches_by_date(MY_API_KEY, print_it=True)
+    # save_matches_by_date(print_it=True)
 
-    save_fixture_player_stats(fixture_id=SAMPLE_MATCH_ID, api_key=MY_API_KEY)
+    # save_fixture_player_stats(fixture_id=SAMPLE_MATCH_ID)
+    data = get_match_playerdata(SAMPLE_MATCH_ID, force_download=True)
+    for team in data["response"]:
+        print(team["players"][0])
+
+    
