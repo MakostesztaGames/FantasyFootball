@@ -54,11 +54,12 @@ def get_fixtures(fixture_date: date = None, team=None, league=None):
     return ret_data
         
 
-def calculate_player_points(player_stats):
+def calculate_player_points(raw_player_stats):
     rules = load_json(Path("rating_rules/example.json"))
 
+    player_stats = process_player_data(raw_player_stats)
 
-    total_points = 0.0
+    total_points = 30.0
     breakdown = {}
 
     # Végigmegyünk a szabályzat kategóriáin (games, shots, goals, stb.)
@@ -83,3 +84,80 @@ def calculate_player_points(player_stats):
                 breakdown[category] = round(category_score, 2)
 
     return {"total_points": round(total_points, 2), "breakdown": breakdown}
+
+
+def process_player_data(raw: Dict) -> Dict:
+    '''prcesses the player data into a dict, that contains exatly the data, that worth point'''
+    # Biztonságos értékkinyerő: ha None vagy hiányzik, 0-t ad vissza, és számmá alakít
+    def get_val(category, key):
+        try:
+            val = raw.get(category, {}).get(key)
+            if val is None:
+                return 0
+            return int(val)
+        except (ValueError, TypeError, AttributeError):
+            return 0
+    
+    # Tizenegyesek
+    pen_won = get_val("penalty", "won")
+    pen_scored = get_val("penalty", "scored")
+    
+    # Cselek
+    dribble_attempts = get_val("dribbles", "attempts")
+    dribble_success = get_val("dribbles", "success")
+    
+    # Passzok
+    passes_total = get_val("passes", "total")
+    passes_completed = get_val("passes", "accuracy") # A mintád alapján az accuracy a sikeres passzok száma
+    
+    # Párharcok
+    duels_total = get_val("duels", "total")
+    duels_won = get_val("duels", "won")
+
+    # Kapott gól és játékpercek a Cleansheet (kapott gól nélküli meccs) számításához
+    conceded = get_val("goals", "conceded")
+    minutes = get_val("games", "minutes")
+    cleansheet = 1 if (minutes > 0 and conceded == 0) else 0
+
+    # --- A RENDSZEREZETT DICTIONARY ÖSSZEÁLLÍTÁSA ---
+    processed = {
+        "decisive": {
+            "goals": get_val("goals", "total"),
+            "assists": get_val("goals", "assists"),
+            "red card": get_val("cards", "red"),
+            # Kivonjuk a belőtt tizenegyest, és figyelünk, hogy ne menjen mínuszba:
+            "penalty won": max(0, pen_won - pen_scored), 
+            "penalty missed": get_val("penalty", "missed"),
+            "penalty saved": get_val("penalty", "saved"),
+            "penalty commited": get_val("penalty", "commited")
+        },
+        "defense": {
+            "cleansheet": cleansheet,
+            "tackles": get_val("tackles", "total"),
+            "blocks": get_val("tackles", "blocks"),
+            "interceptions": get_val("tackles", "interceptions"),
+            "dribbled past": get_val("dribbles", "past"),
+            "goals conceded": conceded,
+            "saves": get_val("goals", "saves")
+        },
+        "attack": {
+            "shots": get_val("shots", "total"),
+            "shots on target": get_val("shots", "on"),
+            "succesful drible": dribble_success,
+            "failed drible": max(0, dribble_attempts - dribble_success)
+        },
+        "passes": {
+            "pass completed": passes_completed,
+            "pass missed": max(0, passes_total - passes_completed),
+            "key passes": get_val("passes", "key")
+        },
+        "physicality": {
+            "duel won": duels_won,
+            "duel lost": max(0, duels_total - duels_won),
+            "fouls drawn": get_val("fouls", "drawn"),
+            "fouls committed": get_val("fouls", "committed"),
+            "yellow card": get_val("cards", "yellow")
+        }
+    }
+
+    return processed

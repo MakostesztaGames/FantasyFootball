@@ -1,32 +1,38 @@
 {
-    "games": {
-        "minutes": 0.00,
-        "captain": 1.0
+    "decisive": {
+        "goals": 20,
+        "assists": 20,
+        "red card": -15,
+        "penalty won": 20,
+        "penalty missed": -10,
+        "penalty saved":  20,
+        "penalty commited": -15
     },
-    "shots": {
-        "total": 0.5,
-        "on": 2.0
+    "defense": {
+        "cleansheet": 10,
+        "tackles":  1,
+        "blocks":  1,
+        "interceptions":  3,
+        "dribbled past":  -2,
+        "goals conceded": -3,
+        "saves": 7
     },
-    "goals": {
-        "total": 6.0,
-        "assists": 6.0,
-        "conceded": -0.5
+    "attack": {
+        "shots": 0.3,
+        "shots on target":  2.7,
+        "succesful drible": 3,
+        "failed drible": -1
     },
     "passes": {
-        "total": 0.05,
-        "key": 1.0
+        "pass completed": 0.15,
+        "pass missed": -0.1,
+        "key passes":  2
     },
-    "tackles": {
-        "total": 1.0
-    },
-    "duels": {
-        "won": 0.5
-    },
-    "fouls": {
-        "committed": -0.5
-    },
-    "cards": {
-        "yellow": -2.0,
-        "red": -5.0
+    "physicality": {
+        "duel won": 2,
+        "duel lost": -1.5,
+        "fouls drawn": 1.5,
+        "fouls committed": -1.5,
+        "yellow card": -3
     }
 }
