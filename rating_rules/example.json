@@ -1,0 +1,38 @@
+{
+    "decisive": {
+        "goals": 20,
+        "assists": 20,
+        "red card": -15,
+        "penalty won": 20,
+        "penalty missed": -10,
+        "penalty saved":  20,
+        "penalty commited": -15
+    },
+    "defense": {
+        "cleansheet": 10,
+        "tackles":  1,
+        "blocks":  1,
+        "interceptions":  3,
+        "dribbled past":  -2,
+        "goals conceded": -3,
+        "saves": 7
+    },
+    "attack": {
+        "shots": 0.3,
+        "shots on target":  2.7,
+        "succesful drible": 3,
+        "failed drible": -1
+    },
+    "passes": {
+        "pass completed": 0.15,
+        "pass missed": -0.1,
+        "key passes":  2
+    },
+    "physicality": {
+        "duel won": 2,
+        "duel lost": -1.5,
+        "fouls drawn": 1.5,
+        "fouls committed": -1.5,
+        "yellow card": -3
+    }
+}

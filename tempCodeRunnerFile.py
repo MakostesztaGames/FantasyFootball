@@ -1,0 +1,1 @@
+print(team["players"][0])
